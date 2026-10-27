@@ -1,0 +1,14 @@
+* text=auto
+*.c text eol=lf
+*.h text eol=lf
+*.S text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.efi binary
+*.img binary
+*.vhd binary
+*.vdi binary
+*.elf binary
+*.o binary

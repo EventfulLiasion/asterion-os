@@ -1,0 +1,32 @@
+# Generated firmware/kernel images and host executables
+*.efi
+*.img
+*.vhd
+*.vdi
+*.elf
+*.o
+*.exe
+
+# Python and local build caches
+__pycache__/
+/user/.build/
+*.py[cod]
+
+# VirtualBox VMs, logs, and isolated build copies
+/vm/*
+!/vm/run-phase9-vbox.ps1
+!/vm/run-vbox.ps1
+
+# Superseded web mock and phase-specific build wrappers
+/index.html
+/build-phase8b1.ps1
+/build-phase8b2.ps1
+
+# Historical phase writeups superseded by architecture/testing/Phase 9 docs
+/docs/engineering-journal.md
+/docs/roadmap.md
+/docs/phase6-design.md
+/docs/phase7-design.md
+/docs/phase8-syscalls.md
+/docs/phase8b1-elf-loader.md
+/docs/phase8b2-standalone-elf.md

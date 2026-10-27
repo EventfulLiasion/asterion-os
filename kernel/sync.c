@@ -1,0 +1,5 @@
+#include "sync.h"
+static sync_tracker_t tracker;
+static inline uint64_t irq_save_disable(void){uint64_t f;__asm__ volatile("pushfq; popq %0; cli":"=r"(f)::"memory");return f;}
+int sync_lock_acquire(sync_lock_t *lock,sync_guard_t *guard){if(!lock||!guard||guard->acquired)return SYNC_ORDER_VIOLATION;uint64_t f=irq_save_disable();int s=sync_core_before_lock(&tracker,(uintptr_t)lock,lock->rank);if(s!=SYNC_OK){__asm__ volatile("pushq %0; popfq"::"r"(f):"memory","cc");return s;}while(__atomic_exchange_n(&lock->held,1,__ATOMIC_ACQUIRE))__asm__ volatile("pause");s=sync_core_push(&tracker,(uintptr_t)lock,lock->rank);if(s!=SYNC_OK){__atomic_store_n(&lock->held,0,__ATOMIC_RELEASE);__asm__ volatile("pushq %0; popfq"::"r"(f):"memory","cc");return s;}guard->flags=f;guard->acquired=1;return SYNC_OK;}
+void sync_lock_release(sync_lock_t *lock,sync_guard_t *guard){if(!lock||!guard||!guard->acquired)return;if(sync_core_pop(&tracker,(uintptr_t)lock)!=SYNC_OK)return;__atomic_store_n(&lock->held,0,__ATOMIC_RELEASE);uint64_t f=guard->flags;guard->acquired=0;__asm__ volatile("pushq %0; popfq"::"r"(f):"memory","cc");}
